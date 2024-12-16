@@ -40,7 +40,7 @@ using ILogger = Serilog.ILogger;
 namespace Midjourney.API
 {
     /// <summary>
-    /// Discord账号初始化器，用于初始化Discord账号实例。
+    /// Discord账号初始化器，用于初始化Discord账号实例。1
     /// </summary>
     public class DiscordAccountInitializer : IHostedService
     {
