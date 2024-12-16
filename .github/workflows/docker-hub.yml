@@ -23,7 +23,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v1
         with:
-          images: trueaiorg/midjourney-proxy
+          images: panda525/midjourney-proxy
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
