@@ -12,7 +12,7 @@ The most powerful, complete, full-featured, completely free and open source Midj
 
 🦄 截至 2024 年 10 月，根据用户反馈汇总统计，使用本项目总绘图量超过 2000万+ 张🐂，日绘图量 20万+ 张！
 
-⭐ 如果觉得项目不错，请一定帮忙点个 `Star`，万分感谢！
+⭐ 如果觉得项目不错，请一定帮忙点个 `Star`，万分感谢！ 
 
 ## 交流群
 
