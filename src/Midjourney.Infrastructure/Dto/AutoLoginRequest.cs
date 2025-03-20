@@ -15,11 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // Additional Terms:
-// This software shall not be used for any illegal activities. 
+// This software shall not be used for any illegal activities.
 // Users must comply with all applicable laws and regulations,
-// particularly those related to image and video processing. 
+// particularly those related to image and video processing.
 // The use of this software for any form of illegal face swapping,
-// invasion of privacy, or any other unlawful purposes is strictly prohibited. 
+// invasion of privacy, or any other unlawful purposes is strictly prohibited.
 // Violation of these terms may result in termination of the license and may subject the violator to legal action.
 
 using System.ComponentModel.DataAnnotations;
@@ -32,10 +32,21 @@ namespace Midjourney.Infrastructure.Dto
     public class AutoLoginRequest
     {
         /// <summary>
+        /// 2FA 密钥（用于自动登录）
+        /// </summary>
+       // [Required]
+        public string Login2fa { get; set; }
+
+        /// <summary>
         /// 账号（用于自动登录）
         /// </summary>
         [Required]
         public string LoginAccount { get; set; }
+
+        /// <summary>
+        /// 登陆前的启用状态
+        /// </summary>
+        public bool LoginBeforeEnabled { get; set; }
 
         /// <summary>
         /// 密码（用于自动登录）
@@ -44,32 +55,10 @@ namespace Midjourney.Infrastructure.Dto
         public string LoginPassword { get; set; }
 
         /// <summary>
-        /// 2FA 密钥（用于自动登录）
-        /// </summary>
-        [Required]
-        public string Login2fa { get; set; }
-
-        /// <summary>
-        /// 登陆前的启用状态
-        /// </summary>
-        public bool LoginBeforeEnabled { get; set; }
-
-        /// <summary>
-        /// 自定义参数 = ChannelId
+        /// 消息
         /// </summary>
         [MaxLength(4000)]
-        public string State { get; set; }
-
-        /// <summary>
-        /// 登录成功后的 Token
-        /// </summary>
-        public string Token { get; set; }
-
-        /// <summary>
-        /// 通知回调的密钥，防止篡改
-        /// </summary>
-        [MaxLength(4000)]
-        public string Secret { get; set; }
+        public string Message { get; set; }
 
         /// <summary>
         /// 回调地址, 为空时使用全局notifyHook。
@@ -78,14 +67,25 @@ namespace Midjourney.Infrastructure.Dto
         public string NotifyHook { get; set; }
 
         /// <summary>
+        /// 通知回调的密钥，防止篡改
+        /// </summary>
+        [MaxLength(4000)]
+        public string Secret { get; set; }
+
+        /// <summary>
+        /// 自定义参数 = ChannelId
+        /// </summary>
+        [MaxLength(4000)]
+        public string State { get; set; }
+
+        /// <summary>
         /// 是否验证成功
         /// </summary>
         public bool Success { get; set; }
 
         /// <summary>
-        /// 消息
+        /// 登录成功后的 Token
         /// </summary>
-        [MaxLength(4000)]
-        public string Message { get; set; }
+        public string Token { get; set; }
     }
 }
