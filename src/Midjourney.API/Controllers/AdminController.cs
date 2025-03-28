@@ -588,13 +588,13 @@ namespace Midjourney.API.Controllers
                         }
 
                         // 更新账号信息
-                        DbHelper.Instance.AccountStore.Update(item);
+                        //DbHelper.Instance.AccountStore.Update(item);
                         Log.Information("自动登录完成回调处理成功，数据已更新，准备重新登陆！");
-                        // 清空缓存
-                        var inc = _loadBalancer.GetDiscordInstance(item.ChannelId);
-                        inc?.ClearAccountCache(item.Id);
-                        // 后台执行
-                        _ = _discordAccountInitializer.StartCheckAccount(item);
+                        //// 清空缓存
+                        //var inc = _loadBalancer.GetDiscordInstance(item.ChannelId);
+                        //inc?.ClearAccountCache(item.Id);
+                        // 更新重新连接！
+                        await _discordAccountInitializer.ReconnectAccount(item);
                         if (!request.Success)
                         {
                             // 发送邮件
