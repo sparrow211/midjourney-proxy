@@ -15,11 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // Additional Terms:
-// This software shall not be used for any illegal activities. 
+// This software shall not be used for any illegal activities.
 // Users must comply with all applicable laws and regulations,
-// particularly those related to image and video processing. 
+// particularly those related to image and video processing.
 // The use of this software for any form of illegal face swapping,
-// invasion of privacy, or any other unlawful purposes is strictly prohibited. 
+// invasion of privacy, or any other unlawful purposes is strictly prohibited.
 // Violation of these terms may result in termination of the license and may subject the violator to legal action.
 
 global using Midjourney.Infrastructure;
@@ -45,6 +45,43 @@ namespace Midjourney.API
         }
 
         public IConfiguration Configuration { get; }
+
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            if (env.IsDevelopment() || GlobalConfiguration.IsDemoMode == true || GlobalConfiguration.Setting?.EnableSwagger == true)
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseDefaultFiles(); // 启用默认文件（index.html）
+            app.UseStaticFiles(); // 配置提供静态文件
+
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin => true).AllowCredentials();
+            });
+
+            app.UseRouting();
+
+            // 使用自定义中间件
+            app.UseMiddleware<SimpleAuthMiddleware>();
+
+            // 限流
+            app.UseMiddleware<RateLimitingMiddleware>();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -172,7 +209,8 @@ namespace Midjourney.API
                 options.InvalidModelStateResponseFactory = (context) =>
                 {
                     var error = context.ModelState.Values.FirstOrDefault()?.Errors?.FirstOrDefault()?.ErrorMessage ?? "参数异常";
-                    Log.Logger.Warning("参数异常 {@0} - {@1}", context.HttpContext?.Request?.GetUrl() ?? "", error);
+                    //Log.Logger.Warning("参数异常 {@0} - {@1}", context.HttpContext?.Request?.GetUrl() ?? "", error);
+                    Log.Logger.Warning("参数异常-ZDY {@0} - {@1} - RequestBody:{@2}", context.HttpContext?.Request?.GetUrl() ?? "", error, context.HttpContext?.Request?.GetRequestBody());
                     return new JsonResult(Result.Fail(error));
                 };
             });
@@ -240,43 +278,6 @@ namespace Midjourney.API
                 {
                     c.IncludeXmlComments(xmlPath, true);
                 }
-            });
-        }
-
-        public void Configure(IApplicationBuilder app, IHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            if (env.IsDevelopment() || GlobalConfiguration.IsDemoMode == true || GlobalConfiguration.Setting?.EnableSwagger == true)
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseDefaultFiles(); // 启用默认文件（index.html）
-            app.UseStaticFiles(); // 配置提供静态文件
-
-            app.UseCors(builder =>
-            {
-                builder.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin => true).AllowCredentials();
-            });
-
-            app.UseRouting();
-
-            // 使用自定义中间件
-            app.UseMiddleware<SimpleAuthMiddleware>();
-
-            // 限流
-            app.UseMiddleware<RateLimitingMiddleware>();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
             });
         }
     }

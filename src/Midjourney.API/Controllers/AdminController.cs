@@ -544,7 +544,7 @@ namespace Midjourney.API.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("account-login-notify")]
-        public ActionResult AccountLoginNotify([FromBody] AutoLoginRequest request)
+        public async Task<ActionResult> AccountLoginNotify([FromBody] AutoLoginRequest request)
         {
             if (!string.IsNullOrWhiteSpace(request.State) && !string.IsNullOrWhiteSpace(request.LoginAccount))
             {
@@ -589,16 +589,18 @@ namespace Midjourney.API.Controllers
 
                         // 更新账号信息
                         DbHelper.Instance.AccountStore.Update(item);
-
+                        Log.Information("自动登录完成回调处理成功，数据已更新，准备重新登陆！");
                         // 清空缓存
                         var inc = _loadBalancer.GetDiscordInstance(item.ChannelId);
                         inc?.ClearAccountCache(item.Id);
-
+                        // 后台执行
+                        _ = _discordAccountInitializer.StartCheckAccount(item);
                         if (!request.Success)
                         {
                             // 发送邮件
                             EmailJob.Instance.EmailSend(_properties.Smtp, $"自动登录失败-{item.ChannelId}", $"自动登录失败-{item.ChannelId}, {request.Message}, 请手动登录");
                         }
+
                     }
                     else
                     {
